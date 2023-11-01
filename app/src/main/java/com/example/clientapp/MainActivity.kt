@@ -7,8 +7,11 @@ import android.content.ServiceConnection
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import com.example.clientapp.databinding.ActivityMainBinding
 import com.example.motorolademos.IAddInterface
+
+var TAG = "MainActivityClientapp"
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -25,28 +28,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindAddService() {
+        Log.i(TAG, "bindAddService method")
         val intent = Intent("ineed.addition.moto")
+       // intent.setPackage("com.example.motorolademos")
+        //intent.setClassName(this,"com.example.motorolademos.AdditionService")
+
         val pack = IAddInterface::class.java.`package`
-        intent.setPackage(pack.toString())
+        intent.setPackage(pack.name)
         bindService(intent,connection, BIND_AUTO_CREATE)
-
-
     }
 
     private fun openMotoCalendar() {
         var calendarIntent = Intent("ineed.calendar.motorola")
         calendarIntent.setPackage("com.example.motorolademos")
         startActivity(calendarIntent)
-
-
-
-        }
-
+    }
 
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(p0: ComponentName?, aBinder: IBinder?) {
-
+            Log.i("clientActivity", "client activity  connected to service")
             iRemoteService = IAddInterface.Stub.asInterface(aBinder)
             var sum = iRemoteService?.add(30, 40)
             binding.tvSum.text = sum.toString()
@@ -54,14 +55,9 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-/* val binder = aBinder as AdditionService.LocalBinder
- mService = binder.getAddService()
- val sum = mService.add(10,20)
-}*/
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            TODO("Not yet implemented")
+        }
 
-override fun onServiceDisconnected(p0: ComponentName?) {
- TODO("Not yet implemented")
-}
-
-}
+    }
 }
