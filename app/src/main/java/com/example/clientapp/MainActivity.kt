@@ -16,6 +16,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.clientapp.databinding.ActivityMainBinding
 import com.example.motorolademos.IAddInterface
+import java.io.InputStreamReader
+import kotlin.text.Charsets.UTF_8
 
 
 var TAG = "MainActivityClientapp"
@@ -38,6 +40,15 @@ class MainActivity : AppCompatActivity() {
         binding.btnSendmessage.setOnClickListener { bindAddService() }
         binding.btnInsert.setOnClickListener { insertContentProvider() }
         binding.btnRetreive.setOnClickListener { loadDataContentprovider() }
+        binding.btnFile.setOnClickListener { openFileInOtherApp() }
+    }
+
+    private fun openFileInOtherApp() {
+      var  fileUri =  Uri.parse("content://com.moto.filez/cache_dir/test_file.txt")
+        val inputStream = contentResolver.openInputStream(fileUri)
+
+        //binding.tvSum.text = result
+
     }
 
     private fun showDetails() {
@@ -109,7 +120,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadDataContentprovider() {
         val usersUri = Uri.parse("content://com.moto.usersdb")
-        var cursor = contentResolver.query(usersUri,null,null,null,null,)
+        var cursor = contentResolver.query(usersUri, null, null, null, null)
         cursor?.moveToFirst()
         var nameIndex = cursor?.getColumnIndex("name")
         var name =  cursor?.getString(nameIndex!!)
